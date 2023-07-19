@@ -4,14 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    private float horizontal;
-    private float vertical;
-    
-    // Local rigidbody variable to hold a reference to the attached Rigidbody2D component
+    public float speed = 5f;
     private Rigidbody2D body;
-
-    public float limit = 0.7f;
-    public float speed = 20.0f;
+    private Vector2 direction;
 
     void Awake()
     {
@@ -23,21 +18,13 @@ public class PlayerController : MonoBehaviour
         body.gravityScale = 0.0f;
     }
 
-    void Update()
+    private void Update()
     {
-        horizontal = Input.GetAxisRaw("Horizontal"); // -1 is left
-        vertical = Input.GetAxisRaw("Vertical"); // -1 is down
+        direction = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (horizontal != 0 && vertical != 0) // Check for diagonal movement
-        {
-            // limit movement speed diagonally, so you move at 70% speed
-            horizontal *= limit;
-            vertical *= limit;
-        }
-
-        body.velocity = new Vector2(horizontal * speed, vertical * speed);
+        body.velocity = new Vector2(direction.x * speed, direction.y * speed);
     }
 }
